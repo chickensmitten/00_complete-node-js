@@ -23,3 +23,7 @@ server.listen(3000);
 - `npm install nodemon --save-dev` adds "node_modules" folder and "package-lock.json" file. With nodemon, there is no need to restart the app. It will keep the app open.
 - Types of errors: syntax errors, runtime errors, logical errors. Logical errors are silent.
 - To debug NodeJS logical errors. click "run" -> "start debugging"
+
+## Using Express JS on Node JS
+- ExpressJS is easier to code on
+- 
