@@ -109,3 +109,5 @@ module.exports = class Product {
 const Product = require('../models/product');
 ```
 
+## Dyanmic Routes & Advanced Models
+
