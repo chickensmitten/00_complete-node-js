@@ -1,9 +1,9 @@
 # Complete NodeJS Lessons
 - run node console type `node` in terminal
 - creating a node server with the code shown below, then run `node app.js`, then go to `localhost:3000` to see the server running. 
-- `process.exit();` in code hard exits the programme.
-- Info on NodeJS Life Cycle 
-![NodeJS LifeCycle](/public/Node_Lifecycle_Event_Loop.png)
+- `process` is a global variable
+- `process.exit();` in code hard exits the programme
+- Take note of [NodeJS Lifecycle](https://www.oreilly.com/library/view/nodejs-the/9781838826864/video3_4.html) 
 - To parse request bodies, run `req.on("<something>", function())`
 ```
 // app.js
@@ -24,6 +24,47 @@ server.listen(3000);
 - Types of errors: syntax errors, runtime errors, logical errors. Logical errors are silent.
 - To debug NodeJS logical errors. click "run" -> "start debugging"
 
-## Using Express JS on Node JS
-- ExpressJS is easier to code on
-- 
+## Working with Express JS on Node JS
+- ExpressJS is easier to code on NodeJS
+- Below is an example of getting started. For more info to go github/expressjs/express/lib/response.js
+```
+const express = require('express');
+const app = express();
+app.use("/<path>", () => {}) // for post and get requests
+app.get("/<path>", () => {}) // for get requests
+app.post("/<path>", () => {}) // for post requests
+app.delete("/<path>", () => {}) // for delete requests
+app.patch("/<path>", () => {}) // for patch requests
+app.put("/<path>", () => {}) // for put requests
+app.listen(3000);
+```
+- use `const bodyParser = require('body-parser');` to parse incoming body parse requests `res.send(<some html code>)` in `app.use()`
+- use `const Router = express.Router();` example. `router.get()` functions similarly to `app.get()`
+```
+const path = require('path');
+const express = require('express');
+const rootDir = require('../util/path');
+const router = express.Router();
+router.get('/', (req, res, next) => {
+  res.sendFile(path.join(rootDir, 'views', 'shop.html'));
+});
+module.exports = router;
+//remember to import this to app.js file with `const shopRoutes = require('./routes/shop');`
+```
+- Below is example code to show views from express js
+```
+// /routes/admin.js
+const path = require('path');
+const express = require('express');
+const rootDir = require('../util/path');
+const router = express.Router();
+// /admin/add-product => GET
+router.get('/add-product', (req, res, next) => {
+  res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+});
+
+// /util/path.js
+const path = require('path');
+module.exports = path.dirname(process.mainModule.filename);
+```
+- use `app.use(express.static(path.join(__dirname, 'public')));` in app.js to then in the .html file, add `<link rel="stylesheet" href="/css/main.css">` to get the css files loaded.
