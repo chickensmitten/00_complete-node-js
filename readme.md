@@ -114,3 +114,13 @@ const Product = require('../models/product');
 - All modals should have constructors and also static functions. Static functions are get all, find one, add, update, delete etc.
 - Work flow as follows: url or forms in view with URL and call method -> routes -> controllers -> model -> controllers with response -> updated view
 - When deleting product, have to ensure that other relational data are also deleted.
+- You can pass dynamic path segments by adding a ":" to the routes file.
+- The name you add after ":" is the name by which you can extract the data on req.params
+- Optional (query) parameters can also be passed (?myParam=value&b=2) and extracted (req.query.myParam).
+- By call a function within a function, (e.g. delete cart item if a product is deleted), you can interact with models
+```
+  Product.findById(prodId, product => {
+    Cart.deleteProduct(prodId, product.price);
+    res.redirect('/cart');
+  });
+```
