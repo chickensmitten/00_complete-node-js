@@ -77,3 +77,35 @@ module.exports = path.dirname(process.mainModule.filename);
 
 - `app.set(name, value)` and/or `const expressHbs = require('express-handlerbars'); app.engine('handlerbars', expressHbs());` sets a value globally on ExpressJs application. Normally added to app.js
 - `res.render(<file name>, <object value>)` renders a file accordig to the templating engine determined in app.js
+
+## MVC with ExpressJS
+- Models: Represents your data in your code. Work with your data
+- Views: What the user sees. Decoupled from your application code
+- Controller: Connecting your Models and your Views, Contains the "in between" logic. It is also is affected the paths determined by Routes.
+- Create models, views, controllers and routes folders in the root directory
+- Models will use a class, then Controllers will import from it from require
+```
+// /models/product.js
+module.exports = class Product {
+  constructor(t) {
+    this.title = t;
+  }
+
+  save() {
+    getProductsFromFile(products => {
+      products.push(this);
+      fs.writeFile(p, JSON.stringify(products), err => {
+        console.log(err);
+      });
+    });
+  }
+
+  static fetchAll(cb) {
+    getProductsFromFile(cb);
+  }
+};
+
+// in controller
+const Product = require('../models/product');
+```
+
