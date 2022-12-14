@@ -17,6 +17,7 @@ server.listen(3000);
 ```
 - This tutorial covers building a fullstack app with NodeJS. However, plenty of times, we only need to enable GraphQL or API onlt.
 
+
 ## Debugging
 - `npm init` to add "package.json". In "package.json", you can add commands into "scripts" for them to run. 
 - `npm run <script_command>` to run commands. 
@@ -24,6 +25,7 @@ server.listen(3000);
 - `npm install nodemon --save-dev` adds "node_modules" folder and "package-lock.json" file. With nodemon, there is no need to restart the app. It will keep the app open.
 - Types of errors: syntax errors, runtime errors, logical errors. Logical errors are silent.
 - To debug NodeJS logical errors. click "run" -> "start debugging"
+
 
 ## Working with Express JS on Node JS
 - ExpressJS is easier to code on NodeJS
@@ -70,6 +72,7 @@ module.exports = path.dirname(process.mainModule.filename);
 ```
 - use `app.use(express.static(path.join(__dirname, 'public')));` in app.js to then in the .html file, add `<link rel="stylesheet" href="/css/main.css">` to get the css files loaded.
 
+
 ## Working on dynamic content with ExpressJS
 - Handlebars, pug and ejs are used as the main templating engine. Useful resources:
   - Pug Docs: [https://pugjs.org/api/getting-started.html](https://pugjs.org/api/getting-started.html)
@@ -78,6 +81,7 @@ module.exports = path.dirname(process.mainModule.filename);
 
 - `app.set(name, value)` and/or `const expressHbs = require('express-handlerbars'); app.engine('handlerbars', expressHbs());` sets a value globally on ExpressJs application. Normally added to app.js
 - `res.render(<file name>, <object value>)` renders a file accordig to the templating engine determined in app.js
+
 
 ## MVC with ExpressJS
 - Models: Represents your data in your code. Work with your data
@@ -124,3 +128,8 @@ const Product = require('../models/product');
     res.redirect('/cart');
   });
 ```
+
+
+## SQL and NoSQL database
+- first install MySQL into desktop.
+- add database in "/util/database.js", then in the models, call `const db = require('../util/database')`, then execute sql code. Example as follows: `db.execute('SELECT * FROM products');`, then in models, use `.then().catch();` because a promise is used in "/util/database.js"
