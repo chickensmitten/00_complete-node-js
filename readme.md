@@ -15,6 +15,7 @@ const server = http.createServer((req, res) => {
 
 server.listen(3000);
 ```
+- This tutorial covers building a fullstack app with NodeJS. However, plenty of times, we only need to enable GraphQL or API onlt.
 
 ## Debugging
 - `npm init` to add "package.json". In "package.json", you can add commands into "scripts" for them to run. 
@@ -110,4 +111,6 @@ const Product = require('../models/product');
 ```
 
 ## Dyanmic Routes & Advanced Models
-
+- All modals should have constructors and also static functions. Static functions are get all, find one, add, update, delete etc.
+- Work flow as follows: url or forms in view with URL and call method -> routes -> controllers -> model -> controllers with response -> updated view
+- When deleting product, have to ensure that other relational data are also deleted.
