@@ -70,6 +70,10 @@ module.exports = path.dirname(process.mainModule.filename);
 - use `app.use(express.static(path.join(__dirname, 'public')));` in app.js to then in the .html file, add `<link rel="stylesheet" href="/css/main.css">` to get the css files loaded.
 
 ## Working on dynamic content with ExpressJS
-- Handlebars, pug and ejs are used as the main templating engine.
+- Handlebars, pug and ejs are used as the main templating engine. Useful resources:
+  - Pug Docs: [https://pugjs.org/api/getting-started.html](https://pugjs.org/api/getting-started.html)
+  - Handlebars Docs: [https://handlebarsjs.com/](https://pugjs.org/api/getting-started.html)
+  - EJS Docs: [http://ejs.co/#docs](https://pugjs.org/api/getting-started.html)
+
 - `app.set(name, value)` and/or `const expressHbs = require('express-handlerbars'); app.engine('handlerbars', expressHbs());` sets a value globally on ExpressJs application. Normally added to app.js
 - `res.render(<file name>, <object value>)` renders a file accordig to the templating engine determined in app.js
