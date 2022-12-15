@@ -130,6 +130,53 @@ const Product = require('../models/product');
 ```
 
 
-## SQL and NoSQL database
+## Setting up database | SQL and NoSQL database
 - first install MySQL into desktop.
 - add database in "/util/database.js", then in the models, call `const db = require('../util/database')`, then execute sql code. Example as follows: `db.execute('SELECT * FROM products');`, then in models, use `.then().catch();` because a promise is used in "/util/database.js"
+- `npm install sequalize` Using Sequelize as Object Relational Mapping (ORM) for MySQL. So no need to write in SQL.
+- To connect sequalize code in "/util/database.js" with code below. Also, add code in "/app.js"
+```
+// /util/database.js
+const Sequelize = require('sequelize');
+
+const sequelize = new Sequelize('node-complete', 'root', 'nodecomplete', {
+  dialect: 'mysql',
+  host: 'localhost'
+});
+
+module.exports = sequelize;
+
+// /app.js
+sequelize
+  // .sync({ force: true }) // overwrite tables and drops conflicting tables
+  .sync()
+  .then(result => {
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+```
+- Associations is done with the code below:
+```
+// app.js
+// associations are written in app.js
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
+
+// /controllers/admin.js
+// add associations with .user.createProduct
+...
+  req.user
+    .createProduct({
+      title: title,
+      price: price,
+      imageUrl: imageUrl,
+      description: description
+    })
+...
+```
+- How to migrate with sequalize?
