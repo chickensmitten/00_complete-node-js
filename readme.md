@@ -1,4 +1,8 @@
 # Complete NodeJS Lessons
+- This tutorial covers building a fullstack app with NodeJS. However, plenty of times, we only need it to enable GraphQL or API.
+- It is also useful for backend operations like authentication, email, sessions cookies etc.
+
+## Setup
 - run node console type `node` in terminal
 - creating a node server with the code shown below, then run `node app.js`, then go to `localhost:3000` to see the server running. 
 - `process` is a global variable
@@ -15,7 +19,6 @@ const server = http.createServer((req, res) => {
 
 server.listen(3000);
 ```
-- This tutorial covers building a fullstack app with NodeJS. However, plenty of times, we only need to enable GraphQL or API onlt.
 
 
 ## Debugging
@@ -131,8 +134,12 @@ const Product = require('../models/product');
 
 
 ## Setting up database | SQL and NoSQL database
+
+### MySQL
 - first install MySQL into desktop.
 - add database in "/util/database.js", then in the models, call `const db = require('../util/database')`, then execute sql code. Example as follows: `db.execute('SELECT * FROM products');`, then in models, use `.then().catch();` because a promise is used in "/util/database.js"
+
+### Sequalize
 - `npm install sequalize` Using Sequelize as Object Relational Mapping (ORM) for MySQL. So no need to write in SQL.
 - To connect sequalize code in "/util/database.js" with code below. Also, add code in "/app.js"
 ```
@@ -180,3 +187,25 @@ Product.belongsToMany(Cart, { through: CartItem });
 ...
 ```
 - How to migrate with sequalize?
+
+### MongoDB
+- `npm install --save mongodb` 
+- connect with mongodb in "/util/database.js"
+- `mongodb` has its own ORM method
+- To learn more about mongodb, go to mongodb website -> mongodb server -> mongodb CRUD operations to get all the examples
+- This tutorial doesn't close connection. In real life, it is needed.
+- Calling MongoDB database should always follow these steps: get to collection -> execute function using mongodb methods -> then console log results and return results -> else catch error.
+```
+db.collection('products')
+  .find({ _id: new mongodb.ObjectId(prodId) })
+  .next()
+  .then(product => {
+    console.log(product);
+    return product;
+  })
+  .catch(err => {
+    console.log(err);
+  });
+```
+- in this tutorial, cart is added as a field in the users collection
+- This tutorial contains comprehensive methods for CRUD in MongoDB
