@@ -122,7 +122,7 @@ const Product = require('../models/product');
 - Work flow as follows: url or forms in view with URL and call method -> routes -> controllers -> model -> controllers with response -> updated view
 - When deleting product, have to ensure that other relational data are also deleted.
 - You can pass dynamic path segments by adding a ":" to the routes file.
-- The name you add after ":" is the name by which you can extract the data on req.params
+- The name you add after ":" in routes is the name by which you can extract the data on `req.params.< string after : >`
 - Optional (query) parameters can also be passed (?myParam=value&b=2) and extracted (req.query.myParam).
 - By call a function within a function, (e.g. delete cart item if a product is deleted), you can interact with models
 ```
@@ -333,6 +333,7 @@ app.use((req, res, next) => {
 // /controllers/auth.js
 req.flash('error', 'Invalid email or password.');
 ```
+- When resetting password, use goes to form -> type in email -> generate crypto.randomBytes -> send email with crypto token link -> check to ensure crypto token link has not expired -> postNewPassword form page -> create new password
 
 ## Sending mail
 - `npm install --save nodemailer nodemailer-sendgrid-transport`
