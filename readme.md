@@ -486,3 +486,34 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 - dont `fs.readFile` cause it takes a lot of memory, causing overflow. better to stream data with `fs.createReadStream`
 - use PDFKit to create PDF dynamically `npm install --save pdfkit`. note that it uses coffee script.
 - to delete file locally use `fs.unlink`
+
+
+## Pagination
+- implementing pagination from scratch
+- in mongoDB and mongoose, first skip the first x amount of results, then limit the amount that you retrieve. code example, 
+```
+.then(numProducts => {
+  totalItems = numProducts; // this declared the total number of products
+  return Product.find()
+    .skip((page - 1) * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE);
+})
+```
+- then when trying to render in controlers
+```
+// /controllers/shop.js
+res.render('shop/product-list', {
+  prods: products,
+  pageTitle: 'Products',
+  path: '/products',
+  currentPage: page,
+  hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+  hasPreviousPage: page > 1,
+  nextPage: page + 1,
+  previousPage: page - 1,
+  lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+});
+
+// then refer to /includes/pagination.ejs
+
+```
