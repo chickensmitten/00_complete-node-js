@@ -228,3 +228,45 @@ productId: {
     // .select('title price -_id')
     // .populate('userId', 'name')
 ```
+
+## Sessions and Cookies
+- Cookies are stored in the frontend browser side, while sessions are stored in the backend server side, stored in the memory. Storing in memory is not a good idea, because you may run out of it when there are a lot of sessions. Later on, there is a library to store in mongodb database.
+- `npm install --save express-session` to install session functions in expressJS
+- using express-sessions example code below
+```
+// app.js
+const session = require('express-session');
+
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
+
+// /controllers/auth.js
+req.session.isLoggedIn = true;
+```
+- `npm install --save connect-mongodb-session` to store the session into mongodb rather than in memory.
+- using mongodb-session example code below
+```
+// app.js
+const MongoDBStore = require('connect-mongodb-session')(session);
+
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions'
+});
+```
+- Data like whether a user is logged in a form of boolean `true` doesn't stick around in response (res), therefore it is important to keep it in a cookie.
+- Setting cookies in NodeJS can be done with `res.setHeader("Set-Cookie", "loggedIn=true;");` with options for `Max-Age=10; HttpOnly; Secure;` etc. `HttpOnly` can be changed from the http, not from the client browser.
+- Cookie in the frontend to store hash of the ID of the session, the session in the server will match it, then allow for access to private specific user only data
+- To remove a cookie session. The cookie in the frontend will be removed and the session in the mongodb server will be deleted.
+```
+`req.session.destroy(err => {
+  console.log(err);
+  res.redirect('/');
+})`
+```
