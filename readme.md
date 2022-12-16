@@ -517,3 +517,6 @@ res.render('shop/product-list', {
 // then refer to /includes/pagination.ejs
 
 ```
+
+### Asynchronous code in NodeJS
+- It is not very user friendly but, if you must, refer to code in "/public/js/admin.js"
