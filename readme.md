@@ -229,6 +229,7 @@ productId: {
     // .populate('userId', 'name')
 ```
 
+
 ## Sessions and Cookies
 - Cookies are stored in the frontend browser side, while sessions are stored in the backend server side, stored in the memory. Storing in memory is not a good idea, because you may run out of it when there are a lot of sessions. Later on, there is a library to store in mongodb database.
 - Cookies (created by frontend) -> Hashed user ID -> Sessions (Stored in Memory or Database)
@@ -271,3 +272,65 @@ const store = new MongoDBStore({
   res.redirect('/');
 })`
 ```
+
+
+## Authentication
+- Whenever a user calls for restricted access, we have to check if the user's cookie and match it with a session, before allowing for restricted access. Compare this with JWT for NextJS.
+- When creating user data, encrypt password with `npm install --save bcryptjs` before saving it.
+```
+// /controllers/auth.js
+const bcrypt = require('bcryptjs');
+
+return bcrypt
+  .hash(password, 12)
+  .then(hashedPassword => {
+    const user = new User({
+      email: email,
+      password: hashedPassword,
+      cart: { items: [] }
+    });
+    return user.save();
+  })
+  .then(result => {
+    res.redirect('/login');
+  });
+```
+- Use a middleware for route protection, basically, it is a function method in a file, then in routes that needs to use it will import it and call it's method. This is so that if one change in the middleware, all others will change accordingly.
+```
+// middleware/is-auth.js
+module.exports = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect('/login');
+  }
+  next();
+}
+
+// routes/admin.js
+const isAuth = require('../middleware/is-auth');
+
+router.get('/add-product', isAuth, adminController.getAddProduct);
+```
+- To prevent CSRF attack, use CSRF token. User led to Fake Site that looks like our site, then sends malicious action (put or create) to your NodeJS server. To prevent this, we have to make sure that users requests are coming from our views rendered by our application.
+- ATTENTION: csurf is no longer maintained
+- `npm install --save csurf`. Package for node express that generates a token that we can embed in our request for things that changes the users state like forms.
+```
+// /app.js
+const csrf = require('csurf');
+const csrfProection = csrf();
+app.use(csrfProtection);
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken(); // this is needed so that all CSRF token is initiated when our view is loaded.
+  next();
+});
+
+// in ejs forms
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+```
+- `npm install --save connect-flash` to provide user feedback like notifications when something goes wrong. Then add it in the front end
+```
+// /controllers/auth.js
+req.flash('error', 'Invalid email or password.');
+```
+
