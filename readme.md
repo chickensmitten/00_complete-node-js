@@ -439,3 +439,50 @@ app.use((error, req, res, next) => { //this is to handle 500 error in app.js by 
 });
 ```
 - when succeeded, need to respond with proper code. i.e. 200 when operations succeed, 201 when something created, 404 when page not found, 500 when server fails
+
+
+## File uploads and downloads
+- ATTENTION: the method proposed here is to store file in the server and not some third party cloud server.
+- Handle multipart form data with `npm install --save multer` then add the following code to front end
+```
+// /views/admin/edit.js
+<form class="product-form" action="/admin/<% if (editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST" enctype="multipart/form-data">
+
+// /app.js
+
+// configure disk storage
+const fileStorage = multer.diskStorage({ 
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+});
+
+// filter file type
+const fileFilter = (req, file, cb) => { 
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+// handling file uploads with multer
+app.use( 
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
+);
+```
+- to serve the image files
+```
+app.use('/images', express.static(path.join(__dirname, 'images')));
+```
+- to get pdf, refer to `exports.getInvoice`
+- dont `fs.readFile` cause it takes a lot of memory, causing overflow. better to stream data with `fs.createReadStream`
+- use PDFKit to create PDF dynamically `npm install --save pdfkit`. note that it uses coffee script.
+- to delete file locally use `fs.unlink`
