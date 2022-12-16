@@ -209,3 +209,22 @@ db.collection('products')
 ```
 - in this tutorial, cart is added as a field in the users collection
 - This tutorial contains comprehensive methods for CRUD in MongoDB
+
+### Mongoose
+- Mongoose is an Object Document Mapping Library (ODM)
+- Setting up Mongoose is similar to MongoDB, only that it is written differently
+- Schema method is used in Mongoose. Very similar to constructor. It saves us the trouble of creating methods in the object model constructor. i.e. Product class object has constructors and methods, refer to code above.
+- it provides cursor() for things like data pagination
+- Use code example below for relational setup for ODM
+```
+productId: {
+  type: Schema.Types.ObjectId,
+  ref: 'Product',
+  required: true
+},
+```
+- populate method is used to get related fields quickly and you can control what fields to get i.e. `-_id` means exclude `_id`
+```
+    // .select('title price -_id')
+    // .populate('userId', 'name')
+```
