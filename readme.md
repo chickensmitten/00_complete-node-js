@@ -335,6 +335,7 @@ req.flash('error', 'Invalid email or password.');
 ```
 - When resetting password, use goes to form -> type in email -> generate crypto.randomBytes -> send email with crypto token link -> check to ensure crypto token link has not expired -> postNewPassword form page -> create new password
 
+
 ## Sending mail
 - `npm install --save nodemailer nodemailer-sendgrid-transport`
 ```
@@ -355,3 +356,64 @@ return transporter.sendMail({
   html: '<h1>You successfully signed up!</h1>'
 });
 ```
+
+
+## Validation Process
+- Validation ideally should be done client side, then validate on server side. If either fails, send error message. Some times database has built in validation
+- `npm install --save express-validator` for NodeJS. for more validator methods go to `validator.js`
+```
+// /routes/auth.js
+const { body } = require("express-validator/check");
+
+router.post(
+  '/add-product',
+  [
+    body('title')
+      .isString()
+      .isLength({ min: 3 })
+      .trim(),
+    body('imageUrl').isURL(),
+    body('price').isFloat(),
+    body('description')
+      .isLength({ min: 5, max: 400 })
+      .trim()
+  ],
+  isAuth,
+  adminController.postAddProduct
+);
+
+// /controllers/auth.js
+
+const { validationResult } = require('express-validator/check');
+
+const errors = validationResult(req);
+if (!errors.isEmpty()) {
+  return res.status(422).render('auth/login', {
+    path: '/login',
+    pageTitle: 'Login',
+    errorMessage: errors.array()[0].msg,
+    oldInput: {
+      email: email,
+      password: password //this is to keep old inputs
+    },
+    validationErrors: errors.array()
+  });
+}
+
+// /views/auth/signup.js
+// change css invalid class to show red colour for invalid class
+<input 
+    class="<%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>"
+    type="password" 
+    name="password" 
+    id="password" 
+    value="<%= oldInput.password %>">
+```
+- inputs like blank spaces can be sanitized with `trim();` during validation
+
+
+## Error Handling
+- There are three type of errors: Technical/network errors, expected errors, bugs/logical errors
+- Error is thrown: synchronous code with `try-catch` and asynchronous code with `then()-catch()`.
+- No error is thrown: validate values where error is thrown or direcly handle errors. Then show error page (e.g. 500 page), intended page/response with error information and redirect.
+- 
