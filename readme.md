@@ -518,5 +518,50 @@ res.render('shop/product-list', {
 
 ```
 
-### Asynchronous code in NodeJS
+
+## Asynchronous code in NodeJS
 - It is not very user friendly but, if you must, refer to code in "/public/js/admin.js"
+
+
+## Payment Process
+- Collect payment method, verify payment method, charge payment method, manage payments, process order in app
+- `npm install --save stripe`
+- on front end checkout add this script
+```
+// /view/shop/checkout.ejs
+<button id="order-btn" class="btn">ORDER</button>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('pk_test_Oa1aEfV1EFTGOLJHIkx6mFUs00AtOsluFy');
+    var orderBtn = document.getElementById('order-btn');
+    orderBtn.addEventListener('click', function() {
+        stripe.redirectToCheckout({
+            sessionId: '<%= sessionId %>'
+        });
+    });
+</script>
+```
+- in controller adjust the code
+```
+// /controllers/shop.js
+const stripe = require('stripe')('sk_test_Flc1Upp19T0q8ZgmKGDVJUI400j9emUSTr');
+
+// in exports.getCheckout
+return stripe.checkout.sessions.create({
+  payment_method_types: ['card'],
+  line_items: products.map(p => {
+    return {
+      name: p.productId.title,
+      description: p.productId.description,
+      amount: p.productId.price * 100,
+      currency: 'usd',
+      quantity: p.quantity
+    };
+  }),
+  success_url: req.protocol + '://' + req.get('host') + '/checkout/success', // => http://localhost:3000
+  cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+});
+
+```
+- go to stripe One-time Payments in their documents for more information
+- ATTENTION: there are no webhooks. It is needed to check for success
