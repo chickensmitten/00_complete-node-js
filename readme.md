@@ -416,4 +416,26 @@ if (!errors.isEmpty()) {
 - There are three type of errors: Technical/network errors, expected errors, bugs/logical errors
 - Error is thrown: synchronous code with `try-catch` and asynchronous code with `then()-catch()`.
 - No error is thrown: validate values where error is thrown or direcly handle errors. Then show error page (e.g. 500 page), intended page/response with error information and redirect.
-- 
+- instead of redirect to 500 page, we can throw an error object
+```
+// /controllers/admin.js
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  });
+
+// /app.js
+app.get('/500', errorController.get500);
+
+app.use((error, req, res, next) => { //this is to handle 500 error in app.js by renderring 500 error page rather than redirecting to 500, cause it will get stuck in an infinite loop.
+  // res.status(error.httpStatusCode).render(...);
+  // res.redirect('/500');
+  res.status(500).render('500', {
+    pageTitle: 'Error!',
+    path: '/500',
+    isAuthenticated: req.session.isLoggedIn
+  });
+});
+```
+- when succeeded, need to respond with proper code. i.e. 200 when operations succeed, 201 when something created, 404 when page not found, 500 when server fails
