@@ -231,6 +231,7 @@ productId: {
 
 ## Sessions and Cookies
 - Cookies are stored in the frontend browser side, while sessions are stored in the backend server side, stored in the memory. Storing in memory is not a good idea, because you may run out of it when there are a lot of sessions. Later on, there is a library to store in mongodb database.
+- Cookies (created by frontend) -> Hashed user ID -> Sessions (Stored in Memory or Database)
 - `npm install --save express-session` to install session functions in expressJS
 - using express-sessions example code below
 ```
